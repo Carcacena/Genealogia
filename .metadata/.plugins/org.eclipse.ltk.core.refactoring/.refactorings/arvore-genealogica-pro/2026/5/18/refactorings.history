@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;arvore-genealogica-pro/src/main/resources/static/appLogin.js&apos; to &apos;appLoginAntigo.js&apos;" description="Rename resource &apos;appLogin.js&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/resources/static/appLogin.js" name="appLoginAntigo.js" stamp="1777729038501" updateReferences="true"/>
+</session>

@@ -1,0 +1,720 @@
+
+josé gouvêa de paula <josegouveadepaula@gmail.com>
+20:00 (há 0 minuto)
+para mim
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<title>CRUD Usuário – Teste Final</title>
+
+	<style>
+
+		body {
+
+			font-family: Arial;
+
+			background: linear-gradient(135deg, #1e3c72, #2a5298);
+
+			height: 100vh;
+
+			display: flex;
+
+			justify-content: center;
+
+			align-items: center;
+
+			margin: 0;
+
+			color: white;
+
+		}
+
+
+
+		.container {
+
+			text-align: center;
+
+			background: rgba(0, 0, 0, 0.3);
+
+			padding: 40px;
+
+			border-radius: 12px;
+
+			width: 400px;
+
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+
+		}
+
+
+
+		button {
+
+			width: 90%;
+
+			padding: 10px;
+
+			margin: 10px 0;
+
+			border: none;
+
+			border-radius: 5px;
+
+			cursor: pointer;
+
+			font-weight: bold;
+
+			background: #ff9800;
+
+			color: white;
+
+		}
+
+
+
+		#userList {
+
+			max-height: 200px;
+
+			overflow-y: auto;
+
+			background: rgba(255, 255, 255, 0.1);
+
+			margin-top: 20px;
+
+			border-radius: 5px;
+
+			text-align: left;
+
+			padding: 10px;
+
+		}
+
+
+
+		.user-item {
+
+			padding: 5px;
+
+			border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+			cursor: pointer;
+
+		}
+
+
+
+		.user-item.selecionado {
+
+			background: rgba(255, 255, 0, 0.3);
+
+		}
+
+
+
+		/* Modal */
+
+		.modal {
+
+			display: none;
+
+			position: fixed;
+
+			top: 0;
+
+			left: 0;
+
+			width: 100%;
+
+			height: 100%;
+
+			background: rgba(0, 0, 0, 0.6);
+
+			justify-content: center;
+
+			align-items: center;
+
+		}
+
+
+
+		.modal-content {
+
+			background: white;
+
+			color: black;
+
+			padding: 20px;
+
+			border-radius: 10px;
+
+			width: 300px;
+
+			text-align: left;
+
+		}
+
+
+
+		.modal-content label {
+
+			display: block;
+
+			margin: 10px 0 5px;
+
+		}
+
+
+
+		.modal-content input,
+
+		.modal-content select {
+
+			width: 100%;
+
+			padding: 5px;
+
+			border-radius: 5px;
+
+			border: 1px solid #ccc;
+
+		}
+
+
+
+		.modal-buttons {
+
+			text-align: right;
+
+			margin-top: 15px;
+
+		}
+
+
+
+		.modal-buttons button {
+
+			width: auto;
+
+			margin-left: 5px;
+
+			background: #ff9800;
+
+			color: white;
+
+		}
+
+	</style>
+
+</head>
+
+
+
+<body>
+
+	<div class="container">
+
+		<h2>Painel de Usuário – Teste Final</h2>
+
+
+
+		<button onclick="abrirModal('incluir')">➕ Incluir</button>
+
+		<button onclick="abrirModal('alterar')">✏ Alterar</button>
+
+		<button onclick="excluirUsuario()">❌ Excluir</button>
+
+		<button onclick="voltarMenu()">⬅ Voltar ao Menu</button>
+
+		
+
+
+
+		<div id="userList"></div>
+
+	</div>
+
+
+
+	<div class="modal" id="modal">
+
+	
+
+		<div class="modal-content">
+
+			<h3 id="modalTitle"></h3>
+
+			<label>Login:</label>
+
+			<input type="text" id="modalLogin">
+
+			<label>Senha:</label>
+
+			<input type="password" id="modalSenha">
+
+			<label style="display:flex;align-items:center;margin-top:8px;gap:5px;">
+
+			    <input
+
+			        type="checkbox"
+
+			        onclick="mostrarSenha()"
+
+			        style="width:auto;"
+
+			    >
+
+		    Ver senha 👁
+
+			</label>
+
+			<label>Perfil:</label>
+
+			<select id="modalPerfil">
+
+				<option value="usuario">usuario</option>
+
+				<option value="adm">adm</option>
+
+			</select>
+
+			<label>Tipo:</label>
+
+			<select id="modalTipo">
+
+				<option value="0">0 = super admin</option>
+
+				<option value="1">1 = admin</option>
+
+				<option value="2">2 = usuário</option>
+
+			</select>
+
+			
+
+			<div class="modal-buttons">
+
+			    <button onclick="salvarUsuario()">Salvar</button>
+
+			    <button onclick="fecharModal()">Cancelar</button>
+
+
+
+			    <button onclick="logout()">🚪 Voltar</button>
+
+			</div>
+
+			
+
+		</div>
+
+	</div>
+
+	
+
+	<script>
+
+		const API = "http://localhost:8080/usuario";
+
+		
+
+		const token = JSON.parse(
+
+		    localStorage.getItem("token")
+
+		).token;
+
+	
+
+		let usuarios = [];
+
+		let idSelecionado = null;
+
+		let operacao = null;
+
+		
+
+		function mostrarSenha(){
+
+
+
+		    const campo =
+
+		        document.getElementById("modalSenha");
+
+
+
+		    if(campo.type === "password"){
+
+
+
+		        campo.type = "text";
+
+
+
+		    }else{
+
+
+
+		        campo.type = "password";
+
+		    }
+
+		}
+
+
+
+		async function consultarUsuarios() {
+
+			try {
+
+				//const res = await fetch(API);
+
+				const res = await fetch(API, {
+
+
+
+					headers: {
+
+						"Authorization": "Bearer " + token
+
+					}
+
+				});
+
+
+
+				usuarios = await res.json();
+
+				const listDiv = document.getElementById("userList");
+
+				listDiv.innerHTML = "";
+
+				usuarios.forEach(u => {
+
+					const div = document.createElement("div");
+
+					div.className = "user-item";
+
+					div.textContent = `ID: ${u.id} | Login: ${u.login} | Perfil: ${u.perfil} | Tipo: ${u.tipo}`;
+
+					div.onclick = () => {
+
+						idSelecionado = u.id;
+
+						document.querySelectorAll(".user-item").forEach(x => x.classList.remove("selecionado"));
+
+						div.classList.add("selecionado");
+
+					};
+
+					listDiv.appendChild(div);
+
+				});
+
+				idSelecionado = null;
+
+			} catch (err) {alert("Erro ao consultar usuários"); console.error(err);}
+
+		}
+
+
+
+		function abrirModal(op) {
+
+			operacao = op;
+
+			document.getElementById("modal").style.display = "flex";
+
+			document.getElementById("modalTitle").textContent = op === "incluir" ? "Incluir Usuário" : "Alterar Usuário";
+
+			if (op === "alterar" && idSelecionado) {
+
+				const u = usuarios.find(x => x.id === idSelecionado);
+
+				document.getElementById("modalLogin").value = u.login;
+
+				document.getElementById("modalSenha").value = "";
+
+			
+
+				document.getElementById("modalPerfil").value = u.perfil;
+
+				document.getElementById("modalTipo").value = u.tipo;
+
+			} else {
+
+				document.getElementById("modalLogin").value = "";
+
+				document.getElementById("modalSenha").value = "";
+
+				document.getElementById("modalPerfil").value = "usuario";
+
+				document.getElementById("modalTipo").value = "2";
+
+			}
+
+		}
+
+		function fecharModal() {document.getElementById("modal").style.display = "none";}
+
+
+
+		async function salvarUsuario(){
+
+
+
+		    const login =
+
+		        document.getElementById("modalLogin").value.trim();
+
+
+
+		    const senha =
+
+		        document.getElementById("modalSenha").value.trim();
+
+
+
+		    const perfil =
+
+		        document.getElementById("modalPerfil").value;
+
+
+
+		    const tipo =
+
+		        parseInt(document.getElementById("modalTipo").value);
+
+
+
+		    if(operacao==="incluir"){
+
+
+
+		        await fetch(API,{
+
+
+
+		            method:"POST",
+
+
+
+		            headers:{
+
+		                "Content-Type":"application/json",
+
+		                "Authorization":"Bearer " + token
+
+		            },
+
+
+
+		            body: JSON.stringify({
+
+		                login,
+
+		                senha,
+
+		                perfil,
+
+		                tipo
+
+		            })
+
+		        });
+
+
+
+		    }else if(operacao==="alterar"){
+
+
+
+		        if(!idSelecionado && usuarios.length>0)
+
+		            idSelecionado = usuarios[0].id;
+
+
+
+		        await fetch(`${API}/${idSelecionado}`,{
+
+
+
+		            method:"PUT",
+
+
+
+		            headers:{
+
+		                "Content-Type":"application/json",
+
+		                "Authorization":"Bearer " + token
+
+		            },
+
+
+
+		            body: JSON.stringify({
+
+		                login,
+
+		                senha,
+
+		                perfil,
+
+		                tipo
+
+		            })
+
+		        });
+
+		    }
+
+}
+
+		    fecharModal();
+
+
+
+		    consultarUsuarios();
+
+		
+
+
+
+		
+
+			function voltarMenu() {window.location.href = "menu.html";}
+
+			
+
+			window.onload = consultarUsuarios;
+
+			
+
+				
+
+			async function excluirUsuario(){
+
+
+
+			    if(!idSelecionado){
+
+
+
+			        alert("Selecione um usuário");
+
+			        return;
+
+			    }
+
+
+
+			    if(!confirm("Confirma exclusão?"))
+
+			        return;
+
+
+
+			    try{
+
+
+
+			        const response = await fetch(`${API}/${idSelecionado}`,{
+
+
+
+			            method:"DELETE",
+
+
+
+			            headers:{
+
+			                "Authorization":"Bearer " + token
+
+			            }
+
+			        });
+
+
+
+			        if(!response.ok){
+
+
+
+			            alert("Erro ao excluir usuário");
+
+			            return;
+
+			        }
+
+
+
+			        idSelecionado = null;
+
+
+
+			        consultarUsuarios();
+
+
+
+			    }catch(err){
+
+
+
+			        alert("Erro ao excluir");
+
+			        console.error(err);
+
+			    }
+
+			
+
+}
+
+function logout(){
+
+
+
+   /*  localStorage.removeItem("token"); */
+
+
+
+    window.location.href = "menu.html";
+
+}
+
+/*
+
+function voltarMenu(){
+
+
+
+    window.location.href = "menu.html";
+
+}
+
+*/
+
+
+
+
+
+
+
+				</script>
+
+</body>
+
+
+
+</html>

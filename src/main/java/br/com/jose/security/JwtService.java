@@ -21,10 +21,15 @@ public class JwtService {
     @Value("${jwt.expiration:3600000}")
     private long expiration;
 
+    //private Key getSigningKey() {
+    //    byte[] keyBytes = Decoders.BASE64.decode(secret);
+    //    return Keys.hmacShaKeyFor(keyBytes);
+   // }
     private Key getSigningKey() {
-        // Alinhado com o padrão de bytes diretos da string
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
+    
+    
 
     public String gerarToken(UserDetails userDetails) {
         return buildToken(userDetails.getUsername());
@@ -67,4 +72,4 @@ public class JwtService {
 
         return exp.before(new Date());
     }
-} // FIM DA CLASSE JWT_SERVICE
+}

@@ -72,4 +72,26 @@ public class JwtService {
 
         return exp.before(new Date());
     }
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain)
+        throws ServletException, IOException {
+
+    String path = request.getRequestURI();
+    
+    // 🌟 SE FOR A ROTA DE LOGIN, PASSA DIRETO SEM EXECUTAR O FILTRO JWT
+    if ("/auth/login".equals(path)) {
+        filterChain.doFilter(request, response);
+        return;
+    }
+
+    String authHeader = request.getHeader("Authorization");
+    // ... restante do seu código do filtro
+
+    
+
+
+
+    
 }

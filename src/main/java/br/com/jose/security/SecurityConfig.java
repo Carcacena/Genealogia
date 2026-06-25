@@ -1,3 +1,4 @@
+
 package br.com.jose.security;
 
 import java.util.List;
@@ -30,38 +31,47 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                    // 🚨 ALINHADO: Permite o local e a URL definitiva da nuvem
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:8080", "https://railway.app")); 
-                    corsConfig.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-                    corsConfig.setAllowedHeaders(List.of("Authorization","Content-Type"));
+                    
+                    // ✅ CORRIGIDO: Adicionado o subdomínio exato gerado pelo Railway e liberado o localhost para testes locais
+                    corsConfig.setAllowedOrigins(List.of(
+                        "http://localhost:8080", 
+                        "https://railway.app"
+                    )); 
+                    
+                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    
+                    // ✅ AJUSTADO: Garante que o cabeçalho Authorization (JWT) passe sem ser bloqueado no proxy do Railway
+                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+                    corsConfig.setExposedHeaders(List.of("Authorization"));
+                    
                     return corsConfig;
                 }))
-                 		.authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                			    // 🚀 PORTA ABERTA: Rota de login liberada sem travar no 403
-                			    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                    // 🚀 PORTA ABERTA: Rota de login liberada sem travar no 403
+                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 
-                			    // Recursos estáticos e rota de erro liberados
-                			    .requestMatchers(
-                      		        "/",
-                                    "/auth/**",
-                                    "/login.html",
-                			        "/*.html",
-                			        "/*.js",
-                			        "/*.css",
-                			        "/*.jpg",
-                			        "/*.png",
-                			        "/favicon.ico",
-                			        "/mp3/**",
-                			        "/error"
-                			    ).permitAll()
+                    // Recursos estáticos e rota de erro liberados
+                    .requestMatchers(
+                        "/",
+                        "/auth/**",
+                        "/login.html",
+                        "/*.html",
+                        "/*.js",
+                        "/*.css",
+                        "/*.jpg",
+                        "/*.png",
+                        "/favicon.ico",
+                        "/mp3/**",
+                        "/error"
+                    ).permitAll()
 
-                			    // Rotas protegidas que exigirão o Token JWT
-                			    .requestMatchers("/admin/**").authenticated()
-                			    .requestMatchers("/pessoas/**").authenticated()
+                    // Rotas protegidas que exigirão o Token JWT
+                    .requestMatchers("/admin/**").authenticated()
+                    .requestMatchers("/pessoas/**").authenticated()
 
-                			    .anyRequest().authenticated()
-                		) 		
+                    .anyRequest().authenticated()
+                ) 		
                 .sessionManagement(sess ->
                         sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

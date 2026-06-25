@@ -1,4 +1,8 @@
-package br.com.jose.security;
+
+    
+   
+    
+    package br.com.jose.security;
 
 import java.io.IOException;
 
@@ -29,8 +33,17 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // 🚀 LIBERA ENDPOINTS DE AUTH (LOGIN, REGISTER, ETC)
+        if (path.startsWith("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
+        // 🚧 SEM TOKEN → segue fluxo normal (sem quebrar request)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -47,10 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 boolean valido = jwtService.validarToken(token, userDetails);
 
-                System.out.println("TOKEN = " + token);
-                System.out.println("USERNAME = " + username);
-                System.out.println("VALIDO = " + valido);
-
                 if (valido) {
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(
@@ -64,18 +73,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
+        } catch (Exception e) {
+            System.out.println("JWT ERROR = " + e.getMessage());
 
-            } catch (Exception e) {
-                System.out.println("JWT ERROR = " + e.getMessage());
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return; // 🌟 Adicione isso para cortar a requisição imediatamente em caso de token inválido
-}
-
-     
+            // 🚀 NÃO MATA A REQUISIÇÃO GLOBALMENTE
+            SecurityContextHolder.clearContext();
+            filterChain.doFilter(request, response);
+        }
     }
-    
-   
-    
-    
+}
    
 }

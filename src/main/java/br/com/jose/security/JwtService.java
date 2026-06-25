@@ -21,15 +21,10 @@ public class JwtService {
     @Value("${jwt.expiration:3600000}")
     private long expiration;
 
-    //private Key getSigningKey() {
-    //    byte[] keyBytes = Decoders.BASE64.decode(secret);
-    //    return Keys.hmacShaKeyFor(keyBytes);
-   // }
     private Key getSigningKey() {
+        // Alinhado com o padrão de bytes diretos da string
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
-    
-    
 
     public String gerarToken(UserDetails userDetails) {
         return buildToken(userDetails.getUsername());
@@ -72,26 +67,4 @@ public class JwtService {
 
         return exp.before(new Date());
     }
-@Override
-protected void doFilterInternal(HttpServletRequest request,
-                                HttpServletResponse response,
-                                FilterChain filterChain)
-        throws ServletException, IOException {
-
-    String path = request.getRequestURI();
-    
-    // 🌟 SE FOR A ROTA DE LOGIN, PASSA DIRETO SEM EXECUTAR O FILTRO JWT
-    if ("/auth/login".equals(path)) {
-        filterChain.doFilter(request, response);
-        return;
-    }
-
-    String authHeader = request.getHeader("Authorization");
-    // ... restante do seu código do filtro
-
-    
-
-
-
-    
-}
+} // FIM DA CLASSE JWT_SERVICE

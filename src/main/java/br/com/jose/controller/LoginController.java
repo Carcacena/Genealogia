@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jose.DTO.LoginDTO;
-import br.com.jose.Service.BlacklistService;
+import br.com.jose.service.BlacklistService;
 import br.com.jose.model.Usuario;
 import br.com.jose.repository.UsuarioRepository;
 import br.com.jose.security.JwtService;
@@ -33,7 +33,8 @@ public class LoginController {
     @Autowired
     private JwtService jwtService;
 
-    private final BlacklistService blacklistService = new BlacklistService();
+    @Autowired
+    private BlacklistService blacklistService;
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
@@ -54,7 +55,5 @@ public class LoginController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                              .body(Collections.singletonMap("error", "Login inválido"));
-  
     }
-    
 }

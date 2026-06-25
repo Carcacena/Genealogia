@@ -43,7 +43,9 @@ public class SecurityConfig {
 
                 			    // Recursos estáticos e rota de erro liberados
                 			    .requestMatchers(
-                			        "/",
+                      		        "/",
+                                    "/auth/**",
+                                    "/login.html",
                 			        "/*.html",
                 			        "/*.js",
                 			        "/*.css",

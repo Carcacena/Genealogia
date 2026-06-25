@@ -64,10 +64,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (Exception e) {
-            System.out.println("JWT ERROR = " + e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+
+            } catch (Exception e) {
+                System.out.println("JWT ERROR = " + e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return; // 🌟 Adicione isso para cortar a requisição imediatamente em caso de token inválido
+}
+
+     
     }
     
    

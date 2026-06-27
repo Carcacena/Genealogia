@@ -30,10 +30,10 @@ public class LoginController {
   
     private PasswordEncoder encoder;
 
-    @Autowired
+    //@Autowired
     private JwtService jwtService;
 
-    @Autowired
+    //@Autowired
     private BlacklistService blacklistService;
 
     @PostMapping("/logout")

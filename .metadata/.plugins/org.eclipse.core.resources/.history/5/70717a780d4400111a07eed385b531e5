@@ -1,0 +1,5 @@
+package br.com.jose.config;
+
+public class SecurityConfig {
+
+}

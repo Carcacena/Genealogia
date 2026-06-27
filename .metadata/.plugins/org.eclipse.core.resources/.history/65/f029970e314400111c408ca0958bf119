@@ -1,0 +1,5 @@
+package br.com.jose.Security;
+
+public class JwtFilter {
+
+}

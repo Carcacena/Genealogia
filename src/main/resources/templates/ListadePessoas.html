@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Pessoas</title>
+</head>
+<body>
+<h1>Lista de Pessoas</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Sexo</th>
+        <th>Mãe</th>
+        <th>Filhos</th>
+    </tr>
+    <tr th:each="p : ${pessoas}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.nome}"></td>
+        <td th:text="${p.sexo}"></td>
+        <td th:text="${p.mae != null ? p.mae.nome : '-'}"></td>
+        <td>
+            <a th:href="@{'/pessoas/' + ${p.id} + '/filhos'}">Ver Filhos</a>
+        </td>
+    </tr>
+</table>
+<a href="/">Voltar ao Início</a>
+</body>
+</html>

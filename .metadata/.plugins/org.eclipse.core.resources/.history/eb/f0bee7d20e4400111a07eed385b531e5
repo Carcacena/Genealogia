@@ -1,0 +1,20 @@
+package br.com.jose.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.com.jose.model.Pessoa;
+import br.com.jose.model.Usuario;
+
+	
+	
+	public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
+		Usuario findByLoginAndSenha(String login, String senha);
+
+	   //Usuario findByLoginAndSenha(String login);
+
+}
+
+		

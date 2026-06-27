@@ -24,10 +24,10 @@ import br.com.jose.security.JwtService;
 @RequestMapping("/auth")
 public class LoginController {
 
-    @Autowired
+   
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
+  
     private PasswordEncoder encoder;
 
     @Autowired

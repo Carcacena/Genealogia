@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,17 +23,21 @@ import br.com.jose.service.BlacklistService;
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
+	
+	
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
+	
     private PasswordEncoder encoder;
 
-    @Autowired
+    
     private JwtService jwtService;
 
     private final BlacklistService blacklistService = new BlacklistService();
+
+    LoginController(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {

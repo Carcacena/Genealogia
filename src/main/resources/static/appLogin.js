@@ -1,37 +1,31 @@
 async function logar() {
     const login = document.getElementById("login").value;
-	
     const senha = document.getElementById("senha").value;
 
-    const response = await fetch("http://localhost:8080/auth/login", {
+    // MUDANÇA AQUI: Usa window.location.origin para saber se está no local ou na nuvem
+    const BASE_URL = window.location.origin;
 
+    const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
-
         headers: {
             "Content-Type": "application/json"
         },
-		
         body: JSON.stringify({
             login: login,
             senha: senha
         })
     });
 
-	if (response.ok) {
+    if (response.ok) {
+        const token = await response.text();
+        localStorage.setItem("token", token);
+        sessionStorage.setItem("tipo", "0");
 
-	    const token = await response.text();
+        console.log("TIPO SALVO:");
+        console.log(sessionStorage.getItem("tipo"));
 
-	    localStorage.setItem("token", token);
-
-	    sessionStorage.setItem("tipo", "0");
-
-	    console.log("TIPO SALVO:");
-	    console.log(sessionStorage.getItem("tipo"));
-
-	    window.location.href = "menu.html";
-
-	} else {
-
-	    alert("Login inválido");
-	}
-	}
+        window.location.href = "menu.html";
+    } else {
+        alert("Login inválido");
+    }
+}

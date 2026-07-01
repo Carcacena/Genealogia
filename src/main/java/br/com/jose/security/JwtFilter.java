@@ -69,7 +69,7 @@ protected void doFilterInternal(HttpServletRequest request,
 
     } catch (Exception e) {
         System.out.println("JWT ERROR = " + e.getMessage());
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+     //   response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return;
     }
 }

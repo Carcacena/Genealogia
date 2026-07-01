@@ -4,8 +4,8 @@ async function logar() {
 
     // MUDANÇA AQUI: Usa window.location.origin para saber se está no local ou na nuvem
     const BASE_URL = window.location.origin;
-
-    const response = await fetch(`${BASE_URL}/auth/login`, {
+    const response = await fetch("http://localhost:8080/auth/login", {
+   // const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

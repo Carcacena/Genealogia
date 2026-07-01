@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
                   
-                    corsConfig.setAllowedOrigins(List.of("http://localhost:8080")); // ajuste conforme seu frontend
+                   // corsConfig.setAllowedOrigins(List.of("http://localhost:8080")); // ajuste conforme seu frontend
                    
                     corsConfig.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
                     corsConfig.setAllowedHeaders(List.of("Authorization","Content-Type"));

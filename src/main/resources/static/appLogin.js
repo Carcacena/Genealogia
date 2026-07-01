@@ -2,8 +2,8 @@ async function logar() {
     const login = document.getElementById("login").value;
 	
     const senha = document.getElementById("senha").value;
-
-    const response = await fetch("http://localhost:8080/auth/login", {
+	const response = await fetch("/auth/login", {
+  //  const response = await fetch("http://localhost:8080/auth/login", {
 
         method: "POST",
 
